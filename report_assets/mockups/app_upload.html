@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .photo{ width:150px; height:112px; border-radius:10px; border:1px solid #e2e8f0;
+    background:radial-gradient(circle at 52% 46%, #c2410c 0 14px, # e07a52 14px 30px, #f0b89a 30px 52px, #f6cbb0 52px);
+    background:radial-gradient(circle at 52% 46%, #b91c1c 0 12px, #ea8a66 12px 28px, #f0b89a 28px 50px, #f7d2bb 50px); }
+  .uthumb{ display:flex; gap:12px; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px 12px; max-width:560px; }
+  .uthumb .meta .fn{ font-size:13px; font-weight:700; } .uthumb .meta .sz{ font-size:11px; color:var(--muted); margin-top:2px;}
+  .uthumb .x{ margin-left:auto; width:26px; height:26px; border-radius:8px; background:#fee2e2; color:#b91c1c; display:flex; align-items:center; justify-content:center; font-weight:700;}
+  .attach{ display:flex; align-items:center; gap:10px; background:#ecfeff; border:1px solid #cffafe; border-radius:10px; padding:7px 11px; }
+  .attach .t{ font-size:12.5px; color:#0e7490; font-weight:600; }
+  .miniphoto{ width:30px; height:30px; border-radius:6px; background:radial-gradient(circle at 52% 46%, #b91c1c 0 5px, #ea8a66 5px 11px, #f0b89a 11px 20px, #f7d2bb 20px); }
+</style></head>
+<body>
+<div class="app">
+  <div class="banner">⚠️ <span><b>MediQuick AI provides preliminary triage guidance only.</b> It is not a substitute for professional medical advice, diagnosis, or treatment.</span></div>
+  <div class="body">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"><svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div><div class="name">MediQuick&nbsp;AI</div><div class="sub">Triage Assistant</div></div>
+      </div>
+      <div class="newbtn"><svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg> New Conversation</div>
+      <div class="seclabel">Recent</div>
+      <div class="s-item active"><div class="t">Photo of skin rash</div><div class="m">Today · 2 messages</div></div>
+      <div class="s-item"><div class="t">Red circular rash on arm</div><div class="m">Today · 2 messages</div></div>
+      <div class="s-item"><div class="t">Persistent headache 4 days</div><div class="m">Today · 4 messages</div></div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="ttl">Photo of skin rash</div><div class="pill">● Multimodal · text + image</div></div>
+      <div class="chat">
+        <div class="row right"><div class="userbubble" style="display:flex; flex-direction:column; gap:10px;">
+          <div class="photo"></div>
+          Could you look at this patch on my forearm? It appeared two days ago.
+        </div></div>
+        <div class="ai">
+          <div class="avatar"><svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg></div>
+          <div class="card">
+            <div class="sec">
+              <div class="label">🩺 Possible Conditions <span style="color:#0e7490; font-weight:700; text-transform:none; letter-spacing:0;">· image analysed</span></div>
+              <div class="cond"><span>Tinea corporis (ringworm)</span><span>Nummular eczema</span><span>Granuloma annulare</span></div>
+            </div>
+            <div class="sec">
+              <div class="label">Urgency</div>
+              <div class="badge amber">⚠ See a Doctor Soon</div>
+              <div class="reason">The lesion in the image has a defined border and central clearing consistent with several treatable conditions; a clinician should confirm before treatment.</div>
+            </div>
+            <div class="sec">
+              <div class="label">Recommended Specialist</div>
+              <div class="spec"><svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v6a6 6 0 0 0 12 0V3M9 21a3 3 0 0 0 6 0v-3"/></svg> Dermatologist</div>
+            </div>
+            <div class="sec">
+              <div class="disc">This is a preliminary triage assessment based on a photograph and your description — not a diagnosis. Please see a dermatologist for confirmation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="inputbar">
+        <div class="uthumb" style="margin-bottom:10px;">
+          <div class="miniphoto"></div>
+          <div class="meta"><div class="fn">forearm_rash.jpg</div><div class="sz">image/jpeg · 1.8 MB · resized to 1024px ✓</div></div>
+          <div class="x">✕</div>
+        </div>
+        <div class="inwrap">
+          <div class="iconbtn" style="background:#ccfbf1; color:#0f766e;"><svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></div>
+          <div class="ph">Add a note about the photo…</div>
+          <div class="sendbtn"><svg class="svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

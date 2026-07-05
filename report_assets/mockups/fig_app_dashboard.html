@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif;}
+  body{width:1280px;height:800px;background:#f8fafc;display:flex;overflow:hidden;}
+  .sb{width:264px;height:100%;background:#0f172a;color:#e2e8f0;display:flex;flex-direction:column;flex-shrink:0;}
+  .brand{display:flex;align-items:center;gap:10px;padding:18px 18px 14px;}
+  .logo{width:36px;height:36px;border-radius:9px;background:#14b8a6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;}
+  .brand b{font-size:15px;color:#fff;display:block;line-height:1.1;}
+  .brand span{font-size:11px;color:#94a3b8;}
+  .newbtn{margin:0 12px;background:#0d9488;color:#fff;border-radius:9px;padding:10px;font-size:13px;font-weight:700;text-align:center;}
+  .nav{margin:12px 12px 0;}
+  .nav .it{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:9px;font-size:13px;font-weight:600;color:#cbd5e1;}
+  .nav .it.on{background:#1e293b;color:#fff;}
+  .sec{padding:16px 18px 6px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#64748b;text-transform:uppercase;}
+  .ses{display:flex;align-items:flex-start;gap:8px;margin:0 12px;padding:9px 10px;border-radius:9px;}
+  .dot{width:8px;height:8px;border-radius:99px;margin-top:5px;flex-shrink:0;}
+  .ses .t{font-size:13px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px;}
+  .ses .s{font-size:11px;color:#64748b;}
+  .usr{margin-top:auto;border-top:1px solid #1e293b;padding:12px;display:flex;align-items:center;gap:10px;}
+  .av{width:32px;height:32px;border-radius:99px;background:#334155;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+  .main{flex:1;height:100%;padding:32px 40px;overflow:hidden;}
+  h1{font-size:24px;color:#0f172a;}
+  .lead{font-size:13.5px;color:#64748b;margin-top:4px;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px;}
+  .tile{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .tile .r{display:flex;align-items:center;justify-content:space-between;}
+  .tile .lab{font-size:12px;color:#64748b;font-weight:600;}
+  .tile .i{width:28px;height:28px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;}
+  .tile .v{font-size:26px;font-weight:800;color:#0f172a;margin-top:8px;}
+  .sech{margin:28px 0 12px;font-size:12px;font-weight:700;letter-spacing:.05em;color:#64748b;text-transform:uppercase;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .rc{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .rc.amber{border-left:4px solid #d97706;} .rc.red{border-left:4px solid #dc2626;}
+  .rc .top{display:flex;align-items:center;justify-content:space-between;}
+  .badge{display:inline-flex;align-items:center;gap:5px;color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;}
+  .badge.amber{background:#d97706;} .badge.red{background:#dc2626;}
+  .spec{font-size:11px;color:#64748b;font-weight:600;display:flex;align-items:center;gap:5px;}
+  .rc .h{margin-top:10px;font-size:14px;font-weight:700;color:#1e293b;}
+  .rc .rsn{margin-top:4px;font-size:12px;color:#64748b;line-height:1.4;}
+  .conds{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;}
+  .cond{background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:11px;color:#475569;padding:3px 8px;}
+</style></head>
+<body>
+  <div class="sb">
+    <div class="brand"><div class="logo">✛</div><div><b>MediQuick AI</b><span>Medical Triage Assistant</span></div></div>
+    <div class="newbtn">+ New consultation</div>
+    <div class="nav"><div class="it">💬 Consult</div><div class="it on">▦ Dashboard</div></div>
+    <div class="sec">Recent consultations</div>
+    <div class="ses"><span class="dot" style="background:#d97706"></span><div><div class="t">Headaches behind my eyes…</div><div class="s">Eye Specialist</div></div></div>
+    <div class="ses"><span class="dot" style="background:#dc2626"></span><div><div class="t">Sudden severe crushing chest…</div><div class="s">Cardiologist</div></div></div>
+    <div class="ses"><span class="dot" style="background:#d97706"></span><div><div class="t">Red, itchy, circular rash…</div><div class="s">Dermatologist</div></div></div>
+    <div class="usr"><div class="av">R</div><div><div style="font-size:13px;color:#fff;font-weight:600">Rishwanth</div><div style="font-size:11px;color:#64748b">rishwanth@test.com</div></div></div>
+  </div>
+
+  <div class="main">
+    <h1>Your health dashboard</h1>
+    <div class="lead">A summary of every consultation you've concluded. Tap any card to reopen the conversation.</div>
+    <div class="stats">
+      <div class="tile"><div class="r"><span class="lab">Consultations</span><span class="i" style="background:#0d9488">💬</span></div><div class="v">3</div></div>
+      <div class="tile"><div class="r"><span class="lab">Concluded</span><span class="i" style="background:#475569">▦</span></div><div class="v">3</div></div>
+      <div class="tile"><div class="r"><span class="lab">Self-care</span><span class="i" style="background:#16a34a">✓</span></div><div class="v">0</div></div>
+      <div class="tile"><div class="r"><span class="lab">Need a doctor</span><span class="i" style="background:#d97706">⚠</span></div><div class="v">3</div></div>
+    </div>
+    <div class="sech">Resolutions</div>
+    <div class="cards">
+      <div class="rc amber"><div class="top"><span class="badge amber">⚠ See a Doctor Soon</span><span class="spec">🩺 Eye Specialist</span></div>
+        <div class="h">I keep getting headaches behind my eyes …</div>
+        <div class="rsn">To rule out any underlying conditions and receive further guidance on managing symptoms.</div>
+        <div class="conds"><span class="cond">eye strain</span><span class="cond">tension headache</span></div></div>
+      <div class="rc red"><div class="top"><span class="badge red">🚨 Seek Emergency Care</span><span class="spec">🩺 Cardiologist</span></div>
+        <div class="h">I have sudden severe crushing pain in th…</div>
+        <div class="rsn">Severe chest pain, sweating, and shortness of breath are indicative of a potential cardiac emergency.</div>
+        <div class="conds"><span class="cond">Myocardial Infarction (Heart Attack)</span><span class="cond">Acute Coronary Syndrome</span></div></div>
+      <div class="rc amber"><div class="top"><span class="badge amber">⚠ See a Doctor Soon</span><span class="spec">🩺 Dermatologist</span></div>
+        <div class="h">I have had a red, itchy, circular rash o…</div>
+        <div class="rsn">The rash is persistent and may require further evaluation to rule out other conditions.</div>
+        <div class="conds"><span class="cond">ringworm</span><span class="cond">eczema</span><span class="cond">contact dermatitis</span></div></div>
+    </div>
+  </div>
+</body></html>

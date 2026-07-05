@@ -1,0 +1,42 @@
+{
+  "_note": "Real, unedited responses from the live MediQuick AI backend calling NVIDIA NIM (meta/llama-3.2-90b-vision-instruct) on 2026-06-19. Used as honest proof figures in the mid-sem report.",
+  "consult_doctor": {
+    "input": "I have a red circular rash on my arm for 3 days, it is slightly itchy with a clearer center",
+    "possible_conditions": ["Ringworm", "Contact dermatitis", "Eczema"],
+    "urgency_tier": "consult_doctor",
+    "urgency_reason": "The rash has been present for 3 days and is itchy, which may require further evaluation and guidance from a doctor.",
+    "specialist_type": "Dermatologist",
+    "follow_up_questions": [
+      "Have you recently been in contact with any new substances or products?",
+      "Have you traveled to any areas with high grass or vegetation?",
+      "Have you experienced any fever or swelling around the rash?"
+    ],
+    "disclaimer": "This is a preliminary triage assessment and not a definitive diagnosis. Please consult a doctor for a thorough evaluation and proper diagnosis."
+  },
+  "seek_emergency": {
+    "input": "I have sudden crushing chest pain spreading to my left arm and jaw, sweating and short of breath",
+    "possible_conditions": ["Acute Coronary Syndrome", "Myocardial Infarction", "Angina"],
+    "urgency_tier": "seek_emergency",
+    "urgency_reason": "Sudden crushing chest pain, shortness of breath, and sweating are symptoms that require immediate medical attention.",
+    "specialist_type": "Emergency Medicine / Cardiologist",
+    "follow_up_questions": [
+      "How long have you been experiencing these symptoms?",
+      "Have you had any previous heart conditions or surgeries?",
+      "Are you experiencing any nausea or dizziness?"
+    ],
+    "disclaimer": "This is a preliminary triage assessment, not a diagnosis. If you are experiencing severe symptoms, please seek immediate medical attention."
+  },
+  "self_care": {
+    "input": "I have a tiny shallow paper cut on my finger, no bleeding now, just a little stingy",
+    "possible_conditions": ["minor cut or laceration", "paper cut", "skin irritation"],
+    "urgency_tier": "self_care",
+    "urgency_reason": "The injury is minor and not bleeding, suggesting no immediate medical attention is required.",
+    "specialist_type": "General Physician",
+    "follow_up_questions": [
+      "Have you cleaned the cut with soap and water?",
+      "Are you up to date on your tetanus shots?",
+      "Is the pain or stinging sensation increasing over time?"
+    ],
+    "disclaimer": "This is a preliminary triage assessment and not a definitive diagnosis. If your symptoms worsen or you have concerns, consult a medical professional."
+  }
+}

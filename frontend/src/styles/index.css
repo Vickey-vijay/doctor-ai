@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MediQuick AI — global base + custom utilities */
+
+:root {
+  --mq-teal: #0d9488;
+  --mq-teal-dark: #0f766e;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #0f172a;
+}
+
+/* Thin, unobtrusive scrollbars */
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.35); border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition
+           focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-teal-600 text-white hover:bg-teal-700 focus:ring-teal-500;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-slate-600 hover:bg-slate-100;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900
+           placeholder-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-200;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
+}
+
+@layer utilities {
+  .urgency-self-care { @apply bg-[#16a34a] text-white; }
+  .urgency-consult   { @apply bg-[#d97706] text-white; }
+  .urgency-emergency { @apply bg-[#dc2626] text-white; }
+}
+
+/* typing dots */
+@keyframes mq-bounce { 0%,80%,100% { transform: translateY(0); opacity: .4 } 40% { transform: translateY(-4px); opacity: 1 } }
+.mq-dot { animation: mq-bounce 1.2s infinite ease-in-out; }
+.mq-dot:nth-child(2) { animation-delay: .15s; }
+.mq-dot:nth-child(3) { animation-delay: .3s; }
+
+/* fade-in for new messages */
+@keyframes mq-fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+.mq-fade { animation: mq-fade .25s ease-out; }

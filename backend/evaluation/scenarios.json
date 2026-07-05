@@ -1,0 +1,38 @@
+{
+  "description": "30 structured triage scenarios across dermatology, general medicine, and minor injury. Ground-truth urgency tiers follow standard triage reference guidelines (Dunn et al., The Emergency Medicine Manual).",
+  "tiers": ["self_care", "consult_doctor", "seek_emergency"],
+  "scenarios": [
+    { "id": 1,  "category": "dermatology",     "symptom": "I have a red, itchy, circular patch on my forearm with a raised scaly border that has been slowly getting bigger over a week.", "expected_urgency": "consult_doctor" },
+    { "id": 2,  "category": "dermatology",     "symptom": "I got a mild sunburn on my shoulders yesterday, it is a bit red and warm but no blisters.", "expected_urgency": "self_care" },
+    { "id": 3,  "category": "dermatology",     "symptom": "There are red streaks spreading up my arm from a cut, the area is hot and swollen and I now have a fever.", "expected_urgency": "seek_emergency" },
+    { "id": 4,  "category": "dermatology",     "symptom": "The skin between my toes is itchy, flaky and peeling, it has been like this for a few days.", "expected_urgency": "self_care" },
+    { "id": 5,  "category": "dermatology",     "symptom": "A mole on my back has changed colour, grown, and now has irregular edges over the past two months.", "expected_urgency": "consult_doctor" },
+    { "id": 6,  "category": "dermatology",     "symptom": "I have a few pimples on my face that flared up this week, slightly red but not painful.", "expected_urgency": "self_care" },
+    { "id": 7,  "category": "dermatology",     "symptom": "My face and lips are swelling rapidly with hives all over and my throat feels tight.", "expected_urgency": "seek_emergency" },
+    { "id": 8,  "category": "dermatology",     "symptom": "I have a small dry, itchy patch of eczema on my elbow like I sometimes get.", "expected_urgency": "self_care" },
+    { "id": 9,  "category": "dermatology",     "symptom": "I have a painful band of blisters on just one side of my torso that appeared two days ago.", "expected_urgency": "consult_doctor" },
+    { "id": 10, "category": "dermatology",     "symptom": "I have a widespread blistering rash with peeling skin, sores in my mouth, and a high fever.", "expected_urgency": "seek_emergency" },
+
+    { "id": 11, "category": "general_medicine", "symptom": "I have a mild headache this evening after a long day at work, it eases when I rest.", "expected_urgency": "self_care" },
+    { "id": 12, "category": "general_medicine", "symptom": "I suddenly got the worst headache of my life with a stiff neck and sensitivity to light.", "expected_urgency": "seek_emergency" },
+    { "id": 13, "category": "general_medicine", "symptom": "I have a runny nose, mild sore throat and sneezing since this morning, I feel a bit under the weather.", "expected_urgency": "self_care" },
+    { "id": 14, "category": "general_medicine", "symptom": "I have had a persistent dry cough for about three weeks that is not getting better.", "expected_urgency": "consult_doctor" },
+    { "id": 15, "category": "general_medicine", "symptom": "I have crushing chest pain spreading to my left arm and jaw, I am sweating and short of breath.", "expected_urgency": "seek_emergency" },
+    { "id": 16, "category": "general_medicine", "symptom": "My seasonal allergies are acting up with itchy eyes and sneezing, like every spring.", "expected_urgency": "self_care" },
+    { "id": 17, "category": "general_medicine", "symptom": "I have a fever of 39.5 C and I am becoming confused and very drowsy.", "expected_urgency": "seek_emergency" },
+    { "id": 18, "category": "general_medicine", "symptom": "I get occasional heartburn after eating spicy food, an antacid usually settles it.", "expected_urgency": "self_care" },
+    { "id": 19, "category": "general_medicine", "symptom": "I have felt unusually tired for several weeks and have lost weight without trying.", "expected_urgency": "consult_doctor" },
+    { "id": 20, "category": "general_medicine", "symptom": "I am suddenly struggling to breathe and feel short of breath even sitting still.", "expected_urgency": "seek_emergency" },
+
+    { "id": 21, "category": "minor_injury",    "symptom": "I got a tiny paper cut on my finger, it stung for a second and barely bled.", "expected_urgency": "self_care" },
+    { "id": 22, "category": "minor_injury",    "symptom": "I rolled my ankle slightly, it is a little swollen but I can still walk on it without much pain.", "expected_urgency": "self_care" },
+    { "id": 23, "category": "minor_injury",    "symptom": "I have a deep cut that is still bleeding heavily even after pressing on it for fifteen minutes.", "expected_urgency": "seek_emergency" },
+    { "id": 24, "category": "minor_injury",    "symptom": "I bumped my shin on a table and now have a small bruise, it is a bit tender.", "expected_urgency": "self_care" },
+    { "id": 25, "category": "minor_injury",    "symptom": "I fell and now my wrist is severely painful, visibly bent at an odd angle and I cannot move it.", "expected_urgency": "seek_emergency" },
+    { "id": 26, "category": "minor_injury",    "symptom": "I touched a hot pan and have a small red mark on my finger, no blister, it just stings a little.", "expected_urgency": "self_care" },
+    { "id": 27, "category": "minor_injury",    "symptom": "I jammed my finger playing cricket, it is swollen and painful but I can still bend it.", "expected_urgency": "consult_doctor" },
+    { "id": 28, "category": "minor_injury",    "symptom": "I hit my head in a fall, briefly blacked out, and have vomited twice since.", "expected_urgency": "seek_emergency" },
+    { "id": 29, "category": "minor_injury",    "symptom": "I have a small splinter in my fingertip, it is mildly annoying but not very painful.", "expected_urgency": "self_care" },
+    { "id": 30, "category": "minor_injury",    "symptom": "I spilled boiling water and have a large blistering burn covering most of my forearm.", "expected_urgency": "seek_emergency" }
+  ]
+}

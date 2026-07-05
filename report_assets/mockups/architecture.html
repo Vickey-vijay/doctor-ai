@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;color:#0f172a;background:#fff;}
+  .wrap{width:1280px;height:880px;padding:26px 40px;display:flex;flex-direction:column;}
+  .top{display:flex;align-items:flex-start;justify-content:space-between;}
+  .title{font-size:23px;font-weight:800;letter-spacing:-.3px;}
+  .subtitle{font-size:13px;color:#64748b;margin-top:3px;}
+  .legend{display:flex;gap:16px;font-size:12px;color:#334155;align-items:center;}
+  .legend .it{display:flex;align-items:center;gap:7px;}
+  .sw{width:13px;height:13px;border-radius:4px;}
+  .flow{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;margin-top:4px;}
+  .node{border-radius:12px;padding:10px 18px;font-weight:700;font-size:14px;text-align:center;}
+  .user{background:#1e293b;color:#fff;}
+  .panel{width:1000px;border-radius:14px;border:1.5px solid;padding:12px 16px;}
+  .panel .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .panel .pt{font-weight:800;font-size:14.5px;}
+  .tag{font-size:10.5px;font-weight:800;letter-spacing:.5px;padding:3px 9px;border-radius:999px;text-transform:uppercase;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{font-size:12px;font-weight:600;padding:6px 11px;border-radius:9px;background:#fff;border:1px solid #e2e8f0;}
+  .green{border-color:#16a34a;background:#f0fdf4;} .green .pt{color:#15803d;} .green .tag{background:#16a34a;color:#fff;} .green .chip{border-color:#bbf7d0;}
+  .amber{border-color:#d97706;background:#fffbeb;} .amber .pt{color:#b45309;} .amber .tag{background:#d97706;color:#fff;} .amber .chip{border-color:#fde68a;}
+  .arrow{color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;line-height:1;}
+  .arrow .lbl{font-size:11px;color:#94a3b8;margin-bottom:2px;}
+  .arrow .a{font-size:18px;}
+  .duo{width:1000px;display:flex;gap:16px;}
+  .duo .panel{flex:1;width:auto;}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><div class="title">MediQuick AI — System Architecture</div>
+      <div class="subtitle">Multimodal medical triage · React + FastAPI + NVIDIA NIM (Llama 3.2 90B Vision) · JWT auth · specialist-agent routing</div></div>
+    <div class="legend">
+      <div class="it"><span class="sw" style="background:#16a34a"></span>Completed</div>
+      <div class="it"><span class="sw" style="background:#d97706"></span>Planned / next</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="node user">👤&nbsp; User · Web Browser</div>
+    <div class="arrow"><span class="a">▼</span></div>
+
+    <div class="panel green">
+      <div class="ph"><span class="pt">Frontend — React + Vite + Tailwind CSS</span><span class="tag">Done</span></div>
+      <div class="chips"><span class="chip">Login / Register</span><span class="chip">ChatWindow</span><span class="chip">TriageCard</span><span class="chip">SpecialistHandoff</span><span class="chip">ImageUpload</span><span class="chip">SessionSidebar</span><span class="chip">Dashboard</span><span class="chip">Disclaimer banner</span></div>
+    </div>
+    <div class="arrow"><span class="lbl">REST · JSON over HTTP (Axios) · Bearer JWT</span><span class="a">▼</span></div>
+
+    <div class="panel green">
+      <div class="ph"><span class="pt">Backend API — FastAPI (Uvicorn, async)</span><span class="tag">Done</span></div>
+      <div class="chips"><span class="chip">/auth/register · /auth/login (JWT)</span><span class="chip">POST /chat</span><span class="chip">POST /upload</span><span class="chip">/sessions CRUD</span><span class="chip">GET /dashboard</span><span class="chip">GET /health</span></div>
+    </div>
+    <div class="arrow"><span class="a">▼</span></div>
+
+    <div class="panel green">
+      <div class="ph"><span class="pt">Service Layer — Python async services</span><span class="tag">Done</span></div>
+      <div class="chips"><span class="chip">security · password hash + JWT</span><span class="chip">prompt_engine · gather→conclude + JSON schema</span><span class="chip">specialists · 10 agent personas + router</span><span class="chip">context_manager · multi-turn history</span><span class="chip">image_pipeline · Pillow resize/base64</span><span class="chip">nvidia_nim · NIM client (text + vision)</span></div>
+    </div>
+    <div class="arrow"><span class="a">▼</span></div>
+
+    <div class="duo">
+      <div class="panel green">
+        <div class="ph"><span class="pt">SQLite + SQLAlchemy</span><span class="tag">Done</span></div>
+        <div class="chips"><span class="chip">User</span><span class="chip">Session</span><span class="chip">Message</span></div>
+      </div>
+      <div class="panel green">
+        <div class="ph"><span class="pt">NVIDIA NIM — Llama 3.2 90B Vision</span><span class="tag">Integrated</span></div>
+        <div class="chips"><span class="chip">/v1/chat/completions</span><span class="chip">text + image_url</span></div>
+      </div>
+      <div class="panel green">
+        <div class="ph"><span class="pt">Evaluation</span><span class="tag">Done · 100%</span></div>
+        <div class="chips"><span class="chip">30 scenarios</span><span class="chip">30/30 correct</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

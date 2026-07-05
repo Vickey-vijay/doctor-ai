@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_shared.css">
+<style>
+  .app{ height:760px; background:#fff; padding:26px 30px; }
+  .h1{ font-size:22px; font-weight:800; letter-spacing:-.3px; }
+  .h2{ font-size:13px; color:var(--muted); margin-top:3px; margin-bottom:20px; }
+  .grid{ display:flex; gap:20px; }
+  .tcard{ flex:1; border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 6px 20px rgba(15,23,42,.06); display:flex; flex-direction:column; }
+  .strip{ height:8px; }
+  .strip.green{ background:var(--green);} .strip.amber{ background:var(--amber);} .strip.red{ background:var(--red);}
+  .tbody{ padding:16px 18px; display:flex; flex-direction:column; gap:13px; }
+  .inq{ font-size:12.5px; color:#475569; background:#f8fafc; border:1px solid #eef2f6; border-radius:9px; padding:9px 11px; font-style:italic; }
+  .badge{ font-size:14px; padding:9px 14px; }
+  .reason{ margin-top:0; font-size:12.5px; }
+  .cond span{ font-size:12px; padding:5px 9px; }
+  .spec{ font-size:13px; }
+  .legend{ display:flex; gap:18px; margin-top:20px; font-size:12px; color:#475569; align-items:center;}
+  .dot{ width:11px; height:11px; border-radius:3px; display:inline-block; margin-right:6px; vertical-align:middle;}
+</style></head>
+<body>
+<div class="app">
+  <div class="h1">MediQuick AI — Structured Triage Across All Three Urgency Tiers</div>
+  <div class="h2">Live, unedited output from the backend calling NVIDIA NIM (Llama 3.2 90B Vision), 19 June 2026.</div>
+  <div class="grid">
+
+    <div class="tcard"><div class="strip green"></div><div class="tbody">
+      <div class="inq">“I have a tiny shallow paper cut on my finger, no bleeding now, just a little stingy.”</div>
+      <div class="label">🩺 Possible Conditions</div>
+      <div class="cond"><span>Minor cut / laceration</span><span>Paper cut</span><span>Skin irritation</span></div>
+      <div><div class="label">Urgency</div><div class="badge green">✓ Manageable at Home</div></div>
+      <div class="reason">The injury is minor and not bleeding, suggesting no immediate medical attention is required.</div>
+      <div><div class="label">Specialist</div><div class="spec">🩺 General Physician</div></div>
+    </div></div>
+
+    <div class="tcard"><div class="strip amber"></div><div class="tbody">
+      <div class="inq">“A red circular rash on my arm for 3 days, slightly itchy with a clearer center.”</div>
+      <div class="label">🩺 Possible Conditions</div>
+      <div class="cond"><span>Ringworm</span><span>Contact dermatitis</span><span>Eczema</span></div>
+      <div><div class="label">Urgency</div><div class="badge amber">⚠ See a Doctor Soon</div></div>
+      <div class="reason">The rash has been present for 3 days and is itchy, which may require further evaluation and guidance from a doctor.</div>
+      <div><div class="label">Specialist</div><div class="spec">🩺 Dermatologist</div></div>
+    </div></div>
+
+    <div class="tcard"><div class="strip red"></div><div class="tbody">
+      <div class="inq">“Sudden crushing chest pain spreading to my left arm and jaw, sweating and short of breath.”</div>
+      <div class="label">🩺 Possible Conditions</div>
+      <div class="cond"><span>Acute Coronary Syndrome</span><span>Myocardial Infarction</span><span>Angina</span></div>
+      <div><div class="label">Urgency</div><div class="badge red">🚨 Seek Emergency Care</div></div>
+      <div class="reason">Sudden crushing chest pain, shortness of breath, and sweating are symptoms that require immediate medical attention.</div>
+      <div><div class="label">Specialist</div><div class="spec">🩺 Emergency Medicine / Cardiologist</div></div>
+    </div></div>
+
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--green)"></span>self_care</span>
+    <span><span class="dot" style="background:var(--amber)"></span>consult_doctor</span>
+    <span><span class="dot" style="background:var(--red)"></span>seek_emergency</span>
+    <span style="margin-left:auto; color:#94a3b8;">The emergency override correctly escalated the chest-pain case regardless of other factors.</span>
+  </div>
+</div>
+</body></html>
