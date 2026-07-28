@@ -4,7 +4,7 @@ import axios from 'axios'
 
 export const API_BASE = 'http://localhost:8001'
 
-const api = axios.create({ baseURL: API_BASE, timeout: 60000 })
+const api = axios.create({ baseURL: API_BASE, timeout: 110000 })
 
 // ── Attach bearer token on every request ──────────────────────────────────────
 api.interceptors.request.use((config) => {
@@ -27,6 +27,11 @@ api.interceptors.response.use(
 
 // Turn an Axios error into a clean, user-facing message.
 export function errMessage(err, fallback = 'Something went wrong. Please try again.') {
+  // NIM vision calls can take 30-90s; axios' 110s timeout surfaces as a generic
+  // "timeout of 110000ms exceeded" message otherwise — give it a friendlier one.
+  if (err?.code === 'ECONNABORTED') {
+    return 'That took longer than expected — the AI service is busy. Please try again.'
+  }
   return err?.response?.data?.detail || err?.message || fallback
 }
 

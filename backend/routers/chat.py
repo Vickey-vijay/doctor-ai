@@ -79,7 +79,9 @@ async def chat(
     # ── 2. Active specialist agent leads this turn (General Physician by default) ─
     active_specialty = session.assigned_specialty or specialists.DEFAULT_SPECIALTY
     system_prompt = prompt_engine.build_system_prompt(
-        specialists.display_name(active_specialty), specialists.persona(active_specialty)
+        specialists.display_name(active_specialty),
+        specialists.persona(active_specialty),
+        prompt_engine.format_patient_context(user),
     )
 
     history = ctx.get_nim_messages()
@@ -109,6 +111,25 @@ async def chat(
         }
     else:
         raw_text = nvidia_nim.extract_text(nim_response)
+
+        # The model occasionally breaks the JSON-only contract (e.g. an off-topic or
+        # ambiguous image). One strict reformat retry recovers most of these before we
+        # fall back to wrapping raw prose into the schema.
+        if prompt_engine.try_extract_json(raw_text) is None:
+            logger.warning("chat: model reply was not valid JSON, retrying with a reformat reminder")
+            retry_messages = messages + [
+                {"role": "assistant", "content": raw_text[:800]},
+                {"role": "user", "content": "That reply was not valid JSON. Respond again with ONLY the JSON object in the required schema — no other text."},
+            ]
+            if has_image:
+                retry_response = await nvidia_nim.send_multimodal_request(
+                    retry_messages, request.image_b64, request.image_mime or "image/jpeg"
+                )
+            else:
+                retry_response = await nvidia_nim.send_text_request(retry_messages)
+            if not retry_response.get("error"):
+                raw_text = nvidia_nim.extract_text(retry_response)
+
         triage = prompt_engine.parse_triage_json(raw_text)
 
     if not triage.get("disclaimer"):

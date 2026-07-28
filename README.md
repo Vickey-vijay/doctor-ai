@@ -13,8 +13,13 @@ MediQuick AI **triages, it does not diagnose**, and every response carries a med
 4. Open **http://localhost:5173** in your browser, register an account, and start a consultation.
 
 ### Requirements
-- [Python 3.11+](https://www.python.org/downloads/) (tick "Add Python to PATH" during install)
+- [Python 3.12](https://www.python.org/downloads/) — tick "Add python.exe to PATH" during install.
+  Python **3.14+ is not supported yet** (some dependencies have no prebuilt installer for it).
 - [Node.js LTS](https://nodejs.org/)
+
+> **Tip:** extract the project to a plain local folder such as `C:\MediQuickAI`. Running setup
+> from inside Dropbox / OneDrive / Google Drive can fail, because those apps lock files while
+> Python is still installing. `setup.bat` will warn you if it detects this.
 
 ## What's Inside
 
@@ -23,7 +28,16 @@ MediQuick AI **triages, it does not diagnose**, and every response carries a med
 | `backend/` | FastAPI server — auth, chat/triage engine, specialist routing, dashboard API |
 | `frontend/` | React + Vite + Tailwind CSS single-page app |
 | `backend/evaluation/` | 30-scenario evaluation harness (100% accuracy on urgency classification) |
-| `report_assets/` | Source files for the project report, KT document, and presentation |
+| `backend/tests/` | Automated pytest suite for the backend services |
+| `docs/` | Final report, presentation, and knowledge-transfer document |
+| `report_assets/` | Source generators, figures, and mockups used to build the documents |
+
+## Running the Tests
+
+```
+cd backend
+.venv\Scripts\python.exe -m pytest tests/ -q
+```
 
 ## Architecture
 
@@ -31,9 +45,12 @@ React (chat UI, triage cards, dashboard) → FastAPI (JWT auth, REST endpoints) 
 
 ## Documentation
 
-- `MediQuickAI_MidSem_Report.docx` — full project report
-- `MediQuickAI_KnowledgeTransfer.docx` — developer onboarding guide
-- `MediQuickAI_Presentation.pptx` — slide deck
+All deliverables live in `docs/`:
+
+- `docs/MediQuickAI_FinalReport.docx` — full project report
+- `docs/MediQuickAI_KnowledgeTransfer.docx` — developer onboarding guide
+- `docs/MediQuickAI_Presentation.pptx` — slide deck
+- `docs/archive/` — superseded mid-semester report, kept for reference
 
 ## Safety Note
 

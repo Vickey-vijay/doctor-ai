@@ -1,34 +1,57 @@
 // Dashboard — summarised triage resolutions per session (conditions + urgency + specialist).
 // No medication/prescription content, by design.
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { dashboardApi, errMessage } from '../api/client'
 import { urgencyMeta, URGENCY } from '../lib/urgency'
 import Icon from '../lib/icons.jsx'
 
 export default function Dashboard() {
-  const { openSession } = useOutletContext()
+  const { openSession, newChat, toggleSidebar } = useOutletContext()
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    let active = true
-    dashboardApi.get()
-      .then((d) => { if (active) setData(d) })
-      .catch((e) => { if (active) setError(errMessage(e)) })
-      .finally(() => { if (active) setLoading(false) })
-    return () => { active = false }
+  const load = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const d = await dashboardApi.get()
+      setData(d)
+    } catch (e) {
+      setError(errMessage(e))
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  if (loading) return <div className="flex h-full items-center justify-center text-slate-400">Loading dashboard…</div>
-  if (error) return <div className="flex h-full items-center justify-center text-red-500">{error}</div>
+  useEffect(() => { load() }, [load])
+
+  if (loading) return <DashboardSkeleton onMenu={toggleSidebar} />
+  if (error) {
+    return (
+      <div className="flex h-full flex-col bg-slate-50">
+        <MobileHeader onMenu={toggleSidebar} />
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-500">
+            <Icon.Alert className="h-6 w-6" />
+          </div>
+          <p className="text-sm font-medium text-slate-700">Couldn't load your dashboard</p>
+          <p className="max-w-sm text-sm text-slate-500">{error}</p>
+          <button onClick={load} className="btn-primary">
+            <Icon.Refresh className="h-4 w-4" /> Retry
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const stats = data?.stats || { total_sessions: 0, concluded_sessions: 0, tier_counts: {} }
   const resolutions = data?.resolutions || []
 
   return (
     <div className="h-full overflow-y-auto bg-slate-50">
+      <MobileHeader onMenu={toggleSidebar} />
       <div className="mx-auto max-w-5xl px-6 py-8">
         <h1 className="text-2xl font-bold text-slate-900">Your health dashboard</h1>
         <p className="mt-1 text-sm text-slate-500">
@@ -55,6 +78,9 @@ export default function Dashboard() {
             </div>
             <p className="mt-3 text-sm font-medium text-slate-700">No concluded consultations yet</p>
             <p className="mt-1 text-sm text-slate-500">Start a consultation and your summaries will appear here.</p>
+            <button onClick={newChat} className="btn-primary mt-4">
+              <Icon.Plus className="h-4 w-4" /> Start a consultation
+            </button>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
@@ -105,6 +131,55 @@ function StatTile({ label, value, color, icon }) {
         </span>
       </div>
       <div className="mt-2 text-2xl font-bold text-slate-900">{value}</div>
+    </div>
+  )
+}
+
+// Hamburger button shown only below `md`, matching the one in the Chat header —
+// keeps the sidebar reachable on small screens where Dashboard has no fixed header of its own.
+function MobileHeader({ onMenu }) {
+  return (
+    <div className="border-b border-slate-200 bg-white px-3 py-3 md:hidden">
+      <button
+        onClick={onMenu}
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50"
+        aria-label="Open menu"
+      >
+        <Icon.Menu className="h-5 w-5" />
+      </button>
+    </div>
+  )
+}
+
+function DashboardSkeleton({ onMenu }) {
+  return (
+    <div className="flex h-full flex-col overflow-y-auto bg-slate-50">
+      <MobileHeader onMenu={onMenu} />
+      <div className="mx-auto w-full max-w-5xl px-6 py-8">
+        <div className="h-7 w-64 max-w-full animate-pulse rounded bg-slate-200" />
+        <div className="mt-2 h-4 w-80 max-w-full animate-pulse rounded bg-slate-200" />
+
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="card p-4">
+              <div className="h-3.5 w-16 animate-pulse rounded bg-slate-200" />
+              <div className="mt-3 h-6 w-10 animate-pulse rounded bg-slate-200" />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 h-4 w-24 animate-pulse rounded bg-slate-200" />
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="card p-4">
+              <div className="h-4 w-20 animate-pulse rounded-full bg-slate-200" />
+              <div className="mt-3 h-4 w-2/3 animate-pulse rounded bg-slate-200" />
+              <div className="mt-2 h-3 w-full animate-pulse rounded bg-slate-200" />
+              <div className="mt-1 h-3 w-4/5 animate-pulse rounded bg-slate-200" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

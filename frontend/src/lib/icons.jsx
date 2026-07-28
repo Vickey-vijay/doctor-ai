@@ -41,6 +41,15 @@ export const Icon = {
   X: (p) => (
     <svg viewBox="0 0 24 24" {...base} {...p}><path d="M18 6 6 18M6 6l12 12" /></svg>
   ),
+  Menu: (p) => (
+    <svg viewBox="0 0 24 24" {...base} {...p}><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+  ),
+  Refresh: (p) => (
+    <svg viewBox="0 0 24 24" {...base} {...p}><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6" /></svg>
+  ),
+  Alert: (p) => (
+    <svg viewBox="0 0 24 24" {...base} {...p}><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /></svg>
+  ),
 }
 
 export default Icon

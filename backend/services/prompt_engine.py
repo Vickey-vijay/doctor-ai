@@ -27,12 +27,14 @@ SYSTEM_PROMPT_TEMPLATE = """You are MediQuick AI, a preliminary medical TRIAGE a
 
 ACTIVE ROLE: {specialty}.
 {persona}
-
+{patient_context}
 CRITICAL IDENTITY:
 - You are NOT a doctor and NOT a diagnostic tool. You perform preliminary triage only.
 - You never give a definitive diagnosis — you say a symptom "may be consistent with X", never "you have X".
 - You never prescribe medication, dosages, or specific drugs.
 - You triage: you assess how URGENT the concern is and WHICH kind of doctor is appropriate.
+- You DO have vision and CAN see any image attached to the user's message. NEVER say you are "text-based",
+  "cannot view images", or similar — that is false. If an image is attached, look at it.
 
 HOW TO CONVERSE (very important):
 - Speak warmly and naturally, the way a good doctor talks to a patient. Acknowledge what they said.
@@ -68,17 +70,52 @@ RULES:
    throat/face, trouble breathing), or a suspected major fracture — then IMMEDIATELY set
    "assessment_status" to "concluded" and "urgency_tier" to "seek_emergency". Do not keep gathering.
 6. Recommend the single most appropriate "specialist_type" for the concern.
-7. If an image is provided that is not a body part or is irrelevant, say so clearly in "reply" and
-   "possible_conditions".
+7. If an image is provided that is not a body part or is irrelevant (e.g. a logo, document, or unrelated
+   photo), you MUST still respond using the exact JSON schema above — say so inside "reply" (e.g. "That
+   doesn't look like a symptom I can triage — is there a health concern I can help with?"), keep
+   "assessment_status" as "gathering", and leave "possible_conditions" empty. Never break out of JSON,
+   never apologise for lacking vision, and never drift into an unrelated topic (e.g. design feedback).
 8. Always include a "disclaimer". Keep language clear, calm, and non-alarming, but never understate a
    genuine emergency.
+9. NEVER respond with plain prose. ALWAYS return exactly one JSON object, even to refuse, redirect, or
+   say you can't help with something.
 
-Return ONLY the JSON object."""
+Return ONLY the JSON object. Do not include any text before or after it."""
 
 
-def build_system_prompt(specialty_display: str, persona: str) -> str:
-    """Render the system prompt for the currently active specialist agent."""
-    return SYSTEM_PROMPT_TEMPLATE.format(specialty=specialty_display, persona=persona)
+def format_patient_context(user) -> str:
+    """Summarise a user's stored health profile into a short prompt block ('' when nothing is set)."""
+    demographics = []
+    if getattr(user, "age", None):
+        demographics.append(f"age {user.age}")
+    if getattr(user, "sex", None):
+        demographics.append(str(user.sex))
+    if getattr(user, "height_cm", None):
+        demographics.append(f"height {user.height_cm:.0f} cm")
+    if getattr(user, "weight_kg", None):
+        demographics.append(f"weight {user.weight_kg:.0f} kg")
+
+    conditions = (getattr(user, "known_conditions", None) or "").strip()
+    allergies = (getattr(user, "allergies", None) or "").strip()
+    if not (demographics or conditions or allergies):
+        return ""
+
+    lines = ["PATIENT PROFILE (from their account — weigh it when judging urgency):"]
+    if demographics:
+        lines.append(f"- Demographics: {', '.join(demographics)}")
+    if conditions:
+        lines.append(f"- Known conditions: {conditions}")
+    if allergies:
+        lines.append(f"- Allergies: {allergies}")
+    lines.append("- Do NOT ask the patient again for details already listed above.")
+    return "\n".join(lines) + "\n"
+
+
+def build_system_prompt(specialty_display: str, persona: str, patient_context: str = "") -> str:
+    """Render the system prompt for the active specialist agent, optionally with the patient profile."""
+    return SYSTEM_PROMPT_TEMPLATE.format(
+        specialty=specialty_display, persona=persona, patient_context=patient_context
+    )
 
 
 def build_messages(system_prompt: str, conversation_history: list[dict], user_message: str) -> list[dict]:
@@ -130,10 +167,10 @@ def _coerce_schema(data: dict) -> dict:
     }
 
 
-def parse_triage_json(raw_response: str) -> dict:
-    """Parse the model's raw text into the triage schema; handles fences, partial JSON, and plain text."""
+def try_extract_json(raw_response: str) -> dict | None:
+    """Try to pull a valid triage dict out of raw model text; return None (no fallback) if it can't."""
     if not raw_response or not raw_response.strip():
-        return _text_fallback("")
+        return None
 
     text = raw_response.strip()
 
@@ -156,9 +193,18 @@ def parse_triage_json(raw_response: str) -> dict:
         except (json.JSONDecodeError, TypeError):
             pass
 
-    # 4) Last resort: wrap the plain text into the schema with a safe tier.
+    return None
+
+
+def parse_triage_json(raw_response: str) -> dict:
+    """Parse the model's raw text into the triage schema; handles fences, partial JSON, and plain text."""
+    parsed = try_extract_json(raw_response)
+    if parsed is not None:
+        return parsed
+
+    # Last resort: wrap the plain text into the schema with a safe tier.
     logger.warning("parse_triage_json: falling back to plain-text wrapping.")
-    return _text_fallback(raw_response)
+    return _text_fallback(raw_response or "")
 
 
 def _text_fallback(raw_text: str) -> dict:

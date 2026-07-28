@@ -17,7 +17,6 @@ class Settings:
     max_image_size_mb: int = int(os.environ.get("MAX_IMAGE_SIZE_MB", "5"))
     max_context_turns: int = int(os.environ.get("MAX_CONTEXT_TURNS", "10"))
     log_level: str = os.environ.get("LOG_LEVEL", "INFO")
-    eval_backend_url: str = os.environ.get("EVAL_BACKEND_URL", "http://localhost:8000")
 
     # ── Authentication ──────────────────────────────────────────────────────────
     jwt_secret: str = os.environ.get("JWT_SECRET", "change-me-in-production")

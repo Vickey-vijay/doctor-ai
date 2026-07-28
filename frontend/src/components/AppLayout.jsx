@@ -10,6 +10,9 @@ export default function AppLayout() {
   const [sessions, setSessions] = useState([])
   const [activeId, setActiveId] = useState(null)
   const [loadingSessions, setLoadingSessions] = useState(true)
+  // Sidebar is always-visible at md+ (CSS handles that); below md it's an off-canvas
+  // drawer toggled by this flag from the hamburger button in each page header.
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const refreshSessions = useCallback(async () => {
     try {
@@ -25,13 +28,26 @@ export default function AppLayout() {
 
   useEffect(() => { refreshSessions() }, [refreshSessions])
 
+  // Close the drawer on Escape while it's open.
+  useEffect(() => {
+    if (!sidebarOpen) return
+    function onKey(e) { if (e.key === 'Escape') setSidebarOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [sidebarOpen])
+
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const toggleSidebar = useCallback(() => setSidebarOpen((o) => !o), [])
+
   function openSession(id) {
     setActiveId(id)
     navigate('/')
+    closeSidebar()
   }
   function newChat() {
     setActiveId(null)
     navigate('/')
+    closeSidebar()
   }
 
   return (
@@ -43,9 +59,11 @@ export default function AppLayout() {
         onOpenSession={openSession}
         onNewChat={newChat}
         onRefresh={refreshSessions}
+        open={sidebarOpen}
+        onClose={closeSidebar}
       />
       <main className="flex-1 overflow-hidden">
-        <Outlet context={{ sessions, activeId, setActiveId, refreshSessions, openSession, newChat }} />
+        <Outlet context={{ sessions, activeId, setActiveId, refreshSessions, openSession, newChat, toggleSidebar }} />
       </main>
     </div>
   )

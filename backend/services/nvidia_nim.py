@@ -13,7 +13,7 @@ CHAT_ENDPOINT = f"{BASE_URL}/chat/completions"
 # Clinical-consistency defaults (low temperature for deterministic triage)
 MAX_TOKENS = 1500
 TEMPERATURE = 0.3
-REQUEST_TIMEOUT = 60.0  # seconds — NIM vision calls can be slow
+REQUEST_TIMEOUT = 100.0  # seconds — NIM vision calls have been observed taking 40-90s
 
 
 def _headers() -> dict:

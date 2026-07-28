@@ -1,6 +1,6 @@
 const pptxgen = require("pptxgenjs");
 const FIG = "C:/Users/Vicke/OneDrive/Desktop/Python/A_COH_10/Rishwanth/mediquick-ai/report_assets/figures/";
-const OUT = "C:/Users/Vicke/OneDrive/Desktop/Python/A_COH_10/Rishwanth/mediquick-ai/MediQuickAI_Presentation.pptx";
+const OUT = "C:/Users/Vicke/OneDrive/Desktop/Python/A_COH_10/Rishwanth/mediquick-ai/docs/MediQuickAI_Presentation.pptx";
 
 const pptx = new pptxgen();
 pptx.layout = "LAYOUT_WIDE"; // 13.333 x 7.5
@@ -33,7 +33,7 @@ let s = pptx.addSlide(); dark(s);
 brand(s, W / 2 - 0.55, 1.55, 1.1);
 s.addText("MediQuick AI", { x: 0, y: 2.85, w: W, h: 1.0, align: "center", fontFace: HF, fontSize: 56, bold: true, color: INK });
 s.addText("An Advanced Multimodal Medical Triage Assistant", { x: 0, y: 3.95, w: W, h: 0.5, align: "center", fontFace: BF, fontSize: 22, color: TEAL });
-s.addText("Mid-Semester Progress Review  ·  June 2026", { x: 0, y: 4.6, w: W, h: 0.4, align: "center", fontFace: BF, fontSize: 15, color: MUT });
+s.addText("Final Project Review  ·  June 2026", { x: 0, y: 4.6, w: W, h: 0.4, align: "center", fontFace: BF, fontSize: 15, color: MUT });
 s.addText([
   { text: "Dissertation: Rishwanth [Last Name]", options: { color: MUT } },
   { text: "      Developer: Vignesh V", options: { color: DIM } },
@@ -113,55 +113,97 @@ stats.forEach((st, i) => {
 });
 
 // ---------- Slide 7 — Evaluation results ----------
-s = pptx.addSlide(); dark(s); header(s, "Evaluation · 30 Structured Scenarios");
-s.addText("100%", { x: 0.7, y: 2.0, w: 4.7, h: 1.9, align: "center", fontFace: HF, fontSize: 116, bold: true, color: GREEN });
-s.addText("urgency-classification accuracy", { x: 0.7, y: 3.95, w: 4.7, h: 0.5, align: "center", fontFace: BF, fontSize: 16, color: INK });
-s.addText("0 unsafe under-triage cases", { x: 0.7, y: 4.45, w: 4.7, h: 0.5, align: "center", fontFace: BF, fontSize: 13, color: MUT });
+s = pptx.addSlide(); dark(s); header(s, "Verified Three Ways");
+const assurance = [
+  ["39 / 39", "Automated Tests", "pytest suite · ~1s runtime · isolated DB · mocked NIM client"],
+  ["30 / 30", "Evaluation Scenarios", "100% urgency accuracy · 0 unsafe under-triage"],
+  ["29 / 29", "Live End-to-End Checks", "on the running app, registration through cross-user isolation"],
+];
+const AW = 3.75, AGAP = 0.325;
+assurance.forEach((a, i) => {
+  const x = 0.7 + i * (AW + AGAP), y = 1.55, h = 2.15;
+  s.addShape(pptx.ShapeType.roundRect, { x, y, w: AW, h, fill: { color: PANEL }, line: { color: PANEL2, width: 1 }, rectRadius: 0.12 });
+  s.addText(a[0], { x, y: y + 0.18, w: AW, h: 0.85, align: "center", fontFace: HF, fontSize: 38, bold: true, color: GREEN });
+  s.addText(a[1], { x: x + 0.2, y: y + 1.05, w: AW - 0.4, h: 0.4, align: "center", fontFace: BF, fontSize: 15, bold: true, color: TEAL });
+  s.addText(a[2], { x: x + 0.25, y: y + 1.45, w: AW - 0.5, h: 0.6, align: "center", fontFace: BF, fontSize: 10.5, color: MUT, lineSpacingMultiple: 1.05 });
+});
+s.addShape(pptx.ShapeType.roundRect, { x: 0.7, y: 4.0, w: 11.9, h: 2.55, fill: { color: PANEL }, line: { color: PANEL2, width: 1 }, rectRadius: 0.12 });
+s.addText("Evaluation Breakdown by Category", { x: 1.0, y: 4.18, w: 11.3, h: 0.45, fontFace: HF, fontSize: 16, bold: true, color: INK });
 const ev = [["Dermatology", "10 / 10"], ["General medicine", "10 / 10"], ["Minor injury", "10 / 10"], ["Overall", "30 / 30"]];
 ev.forEach((e, i) => {
-  const y = 1.75 + i * 1.18;
-  s.addShape(pptx.ShapeType.roundRect, { x: 5.9, y, w: 6.8, h: 1.0, fill: { color: PANEL }, line: { color: PANEL2, width: 1 }, rectRadius: 0.1 });
-  s.addText(e[0], { x: 6.25, y, w: 4.2, h: 1.0, fontFace: BF, fontSize: 16, color: INK, valign: "middle" });
-  s.addText(e[1], { x: 9.9, y, w: 2.5, h: 1.0, align: "right", fontFace: HF, fontSize: 22, bold: true, color: i === 3 ? TEAL : GREEN, valign: "middle" });
+  const x = 1.0 + i * 2.85;
+  s.addText(e[1], { x, y: 4.75, w: 2.6, h: 0.95, align: "center", fontFace: HF, fontSize: 30, bold: true, color: i === 3 ? TEAL : GREEN });
+  s.addText(e[0], { x, y: 5.7, w: 2.6, h: 0.55, align: "center", fontFace: BF, fontSize: 13, color: INK });
 });
-caption(s, "Compared against standard triage reference guidelines, across all three urgency tiers.", 5.9, 6.55, 6.8);
+caption(s, "Compared against standard triage reference guidelines, across all three urgency tiers.", 0.7, 6.68, 11.9);
 
-// ---------- Slide 8 — Progress ----------
-s = pptx.addSlide(); dark(s); header(s, "Progress at the Milestone");
-s.addText("88%", { x: 0.7, y: 1.7, w: 4.6, h: 2.2, align: "center", fontFace: HF, fontSize: 130, bold: true, color: TEAL });
+// ---------- Slide 8 — Defects Found & Fixed ----------
+s = pptx.addSlide(); dark(s); header(s, "Defects Found & Fixed");
+const defects = [
+  ["1", "Off-topic images broke the JSON contract",
+    "An unrelated image (e.g. a company logo) made the model reply in raw prose claiming it “is a text-based AI assistant… not able to view images” — vision was actually working, the image had reached the model. Fixed with a strengthened prompt plus a single strict “reformat as JSON” retry. Re-tested and confirmed fixed."],
+  ["2", "Hardcoded JWT secret fallback",
+    "The environment template shipped with no JWT_SECRET, so every install fell back to a hardcoded default that is public in the repository — login tokens could be forged across deployments. The installer now generates a unique random secret per installation (idempotent)."],
+];
+defects.forEach((d, i) => {
+  const x = 0.7 + i * 6.05, y = 1.5, w = 5.85, h = 2.6;
+  s.addShape(pptx.ShapeType.roundRect, { x, y, w, h, fill: { color: PANEL }, line: { color: PANEL2, width: 1 }, rectRadius: 0.12 });
+  s.addShape(pptx.ShapeType.ellipse, { x: x + 0.3, y: y + 0.28, w: 0.5, h: 0.5, fill: { color: RED }, line: { type: "none" } });
+  s.addText(d[0], { x: x + 0.3, y: y + 0.28, w: 0.5, h: 0.5, align: "center", valign: "middle", fontFace: HF, fontSize: 20, bold: true, color: INK });
+  s.addText(d[1], { x: x + 1.0, y: y + 0.24, w: w - 1.3, h: 0.65, fontFace: HF, fontSize: 15, bold: true, color: TEAL, valign: "middle" });
+  s.addText(d[2], { x: x + 0.35, y: y + 0.95, w: w - 0.7, h: h - 1.15, fontFace: BF, fontSize: 12, color: INK, lineSpacingMultiple: 1.12 });
+});
+const minor = [
+  ["Vision timeout too tight", "Observed NIM vision latency runs 14–42s; raised the timeout from 60s to 100s backend / 110s client."],
+  ["Dead configuration value", "Removed a leftover config value pointing at the wrong port."],
+];
+minor.forEach((m, i) => {
+  const x = 0.7 + i * 6.05, y = 4.35, w = 5.85, h = 1.95;
+  s.addShape(pptx.ShapeType.roundRect, { x, y, w, h, fill: { color: PANEL }, line: { color: PANEL2, width: 1 }, rectRadius: 0.12 });
+  s.addShape(pptx.ShapeType.ellipse, { x: x + 0.3, y: y + 0.26, w: 0.42, h: 0.42, fill: { color: AMBER }, line: { type: "none" } });
+  s.addText(String(i + 3), { x: x + 0.3, y: y + 0.26, w: 0.42, h: 0.42, align: "center", valign: "middle", fontFace: HF, fontSize: 16, bold: true, color: "3a2600" });
+  s.addText(m[0], { x: x + 0.88, y: y + 0.22, w: w - 1.15, h: 0.5, fontFace: HF, fontSize: 14, bold: true, color: TEAL, valign: "middle" });
+  s.addText(m[1], { x: x + 0.35, y: y + 0.8, w: w - 0.7, h: h - 0.95, fontFace: BF, fontSize: 12, color: INK, lineSpacingMultiple: 1.1 });
+});
+caption(s, "All four issues surfaced through live end-to-end testing and are now resolved and re-verified.", 0.7, 6.5, 11.9);
+
+// ---------- Slide 9 — Progress ----------
+s = pptx.addSlide(); dark(s); header(s, "Project Complete");
+s.addText("100%", { x: 0.7, y: 1.7, w: 4.6, h: 2.2, align: "center", fontFace: HF, fontSize: 130, bold: true, color: TEAL });
 s.addText("of the project complete", { x: 0.7, y: 3.95, w: 4.6, h: 0.5, align: "center", fontFace: BF, fontSize: 18, color: INK });
-s.addText("full app + evaluation — only polish remains", { x: 0.7, y: 4.45, w: 4.6, h: 0.5, align: "center", fontFace: BF, fontSize: 13, color: MUT });
+s.addText("every planned phase shipped, tested, and verified", { x: 0.7, y: 4.45, w: 4.6, h: 0.5, align: "center", fontFace: BF, fontSize: 13, color: MUT });
 // completed column
 s.addShape(pptx.ShapeType.roundRect, { x: 5.7, y: 1.7, w: 3.4, h: 5.2, fill: { color: PANEL }, line: { type: "none" }, rectRadius: 0.12 });
 s.addText("Completed", { x: 5.95, y: 1.9, w: 2.9, h: 0.45, fontFace: HF, fontSize: 18, bold: true, color: GREEN });
 ["FastAPI backend + JWT auth", "NVIDIA NIM client (text + vision)", "Prompt engine, gather→conclude", "10 specialist agents + routing", "React UI: chat, card, sidebar", "Dashboard of resolutions", "Evaluation — 30/30 (100%)"]
   .forEach((t, i) => s.addText([{ text: "✓  ", options: { color: GREEN, bold: true } }, { text: t, options: { color: INK } }],
     { x: 5.95, y: 2.5 + i * 0.6, w: 2.95, h: 0.5, fontFace: BF, fontSize: 13, valign: "middle" }));
-// remaining column
+// delivered-highlights column
 s.addShape(pptx.ShapeType.roundRect, { x: 9.3, y: 1.7, w: 3.4, h: 5.2, fill: { color: PANEL }, line: { type: "none" }, rectRadius: 0.12 });
-s.addText("Remaining", { x: 9.55, y: 1.9, w: 2.9, h: 0.45, fontFace: HF, fontSize: 18, bold: true, color: AMBER });
-["Error-handling & UI polish", "Automated backend tests", "Responsive-layout review", "Developer README & handover"]
-  .forEach((t, i) => s.addText([{ text: "○  ", options: { color: AMBER, bold: true } }, { text: t, options: { color: INK } }],
+s.addText("Delivered Highlights", { x: 9.55, y: 1.9, w: 2.9, h: 0.45, fontFace: HF, fontSize: 18, bold: true, color: TEAL });
+["39 automated tests passing", "30/30 evaluation (100%)", "29/29 live checks passed", "Mobile-responsive UI", "Security hardened (JWT)"]
+  .forEach((t, i) => s.addText([{ text: "★  ", options: { color: TEAL, bold: true } }, { text: t, options: { color: INK } }],
     { x: 9.55, y: 2.5 + i * 0.6, w: 2.95, h: 0.5, fontFace: BF, fontSize: 13, valign: "middle" }));
 
-// ---------- Slide 9 — What's next ----------
+// ---------- Slide 10 — What's next ----------
 s = pptx.addSlide(); dark(s); header(s, "What's Next");
 const steps = [
-  ["Polish error handling", "Harden empty / loading / error states across the interface."],
-  ["Automated tests", "A short test suite for the backend services."],
-  ["Responsive review", "Tune the layout for smaller screens."],
-  ["Handover docs", "Developer README and setup guide for the team."],
+  ["Clinician-reviewed validation study", "Partner with practising clinicians to validate triage outputs against real cases."],
+  ["Larger evaluation set", "Expand well beyond 30 scenarios for broader statistical confidence."],
+  ["EHR integration", "Connect with electronic health record systems for richer patient context."],
+  ["Multilingual support", "Extend triage and the interface beyond English."],
+  ["On-device inference", "Explore local model inference to keep sensitive data on-device for privacy."],
 ];
 steps.forEach((p, i) => {
-  const y = 1.75 + i * 1.32;
-  s.addShape(pptx.ShapeType.roundRect, { x: 0.7, y, w: 11.9, h: 1.12, fill: { color: PANEL }, line: { type: "none" }, rectRadius: 0.1 });
-  s.addShape(pptx.ShapeType.ellipse, { x: 1.0, y: y + 0.31, w: 0.5, h: 0.5, fill: { color: TEAL }, line: { type: "none" } });
-  s.addText(String(i + 1), { x: 1.0, y: y + 0.31, w: 0.5, h: 0.5, align: "center", valign: "middle", fontFace: HF, fontSize: 20, bold: true, color: "06281f" });
-  s.addText([{ text: p[0] + "   ", options: { bold: true, fontSize: 17, color: TEAL } }, { text: p[1], options: { fontSize: 14, color: INK } }],
-    { x: 1.75, y: y + 0.12, w: 10.6, h: 0.9, fontFace: BF, valign: "middle", lineSpacingMultiple: 1.05 });
+  const y = 1.6 + i * 1.08, h = 0.92;
+  s.addShape(pptx.ShapeType.roundRect, { x: 0.7, y, w: 11.9, h, fill: { color: PANEL }, line: { type: "none" }, rectRadius: 0.1 });
+  s.addShape(pptx.ShapeType.ellipse, { x: 1.0, y: y + 0.21, w: 0.5, h: 0.5, fill: { color: TEAL }, line: { type: "none" } });
+  s.addText(String(i + 1), { x: 1.0, y: y + 0.21, w: 0.5, h: 0.5, align: "center", valign: "middle", fontFace: HF, fontSize: 20, bold: true, color: "06281f" });
+  s.addText([{ text: p[0] + "   ", options: { bold: true, fontSize: 16, color: TEAL } }, { text: p[1], options: { fontSize: 13, color: INK } }],
+    { x: 1.75, y: y + 0.06, w: 10.6, h: 0.8, fontFace: BF, valign: "middle", lineSpacingMultiple: 1.05 });
 });
 
-// ---------- Slide 10 — Closing ----------
+// ---------- Slide 11 — Closing ----------
 s = pptx.addSlide(); dark(s);
 brand(s, W / 2 - 0.5, 1.9, 1.0);
 s.addText("Thank You", { x: 0, y: 3.1, w: W, h: 1.0, align: "center", fontFace: HF, fontSize: 50, bold: true, color: INK });

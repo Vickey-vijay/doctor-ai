@@ -61,8 +61,11 @@ EVAL_BACKEND_URL=http://localhost:8000
 - [x] Module 9 — React Image Upload Component (ImageUpload → /upload)
 - [x] Module 10 — React Session Sidebar & History (Sidebar, per-user)
 - [x] Module 11 — Safety & Disclaimer System (DisclaimerBanner + triage-not-diagnose prompt)
-- [ ] Module 12 — Evaluation Module (30 scenarios + CSV)  ← only remaining build item
-- [x] Module 13 — Polish, Error Handling & Final QA (error toasts, loading states, empty states)
+- [x] Module 12 — Evaluation Module (30 scenarios → 30/30 = 100%, zero unsafe under-triage)
+- [x] Module 13 — Polish, Error Handling & Final QA (loading skeletons, empty states, retry on error)
+- [x] Module 14 — Automated Test Suite (39 pytest tests, NIM mocked, isolated DB)
+- [x] Module 15 — Mobile-Responsive Pass (off-canvas sidebar drawer below `md`, verified at 375px)
+- [x] Module 16 — Profile-Aware Triage (age/sex/height/weight/allergies/conditions → system prompt)
 
 ## Scope Expansion (Session 2 — agreed with client 2026-06-21)
 Project grew beyond the original abstract into a full product. Added:
@@ -100,12 +103,15 @@ TriageCard only renders when `assessment_status == "concluded"`. Routing maps `s
 → canonical specialty (services/specialists.py) to hand the session to a specialist agent.
 
 ## Current Build Status
-**Sessions 1–2 COMPLETE ✅ — Full-stack app live and demonstrated in-browser (~88%).**
+**PROJECT COMPLETE ✅ (100%) — built, tested, verified live, and delivered.**
 Backend (auth + triage + routing + dashboard) on :8001; React frontend on :5173.
-Login → conversational triage → specialist handoff → triage card → dashboard all verified live.
-**Only remaining build item: Module 12 — Evaluation (30 scenarios → accuracy CSV).**
-NEXT (client checkpoint): regenerate the 3 deliverables (Mid-Sem Report, KT, PPT) to match the
-expanded app — the existing docs in repo root describe the ~46% backend-only state and are now STALE.
+
+Three levels of assurance, all green:
+- **39 pytest tests** in `backend/tests/` — all passing (~1s). NIM mocked, temp DB, no network.
+  Run: `cd backend && .venv\Scripts\python.exe -m pytest tests/ -q`
+- **30-scenario evaluation** — 30/30 = 100% urgency accuracy, ZERO unsafe under-triage.
+- **29/29 live end-to-end checks** against the running app (auth, 401 guards, emergency override,
+  specialist routing, image upload + vision, sessions CRUD, dashboard, cross-user isolation).
 
 ## Model Note
 `NVIDIA_NIM_MODEL` is configurable in `.env`. Currently set to **meta/llama-3.2-90b-vision-instruct**
@@ -125,22 +131,39 @@ expanded app — the existing docs in repo root describe the ~46% backend-only s
   - self_care → "tiny paper cut" → minor cut → General Physician
 - Next session: Modules 7–9 (React chat UI + triage card + image upload).
 
-## Mid-Semester Deliverables (COMPLETE ✅)
-Three academic docs produced in BITS ZG628T format (matched to sample in Rishwanth/Downloads),
-delivered in repo root as both source + PDF:
-- MediQuickAI_MidSem_Report.docx / .pdf — 11 pages: title page (BITS logo), abstract + signature
-  block, TOC, List of Figures/Tables, 9 sections, 5 figures, 3 tables.
-- MediQuickAI_KnowledgeTransfer.docx / .pdf — onboarding guide, 9 sections.
-- MediQuickAI_Presentation.pptx / .pdf — 10-slide dark/teal deck, visually QA'd.
-Author = Rishwanth (student), Vignesh V (developer). Honest framing: ~46% (backend done).
-Figures in report_assets/figures/ (architecture diagram + 4 browser-rendered UI/Swagger shots).
-Build scripts in report_assets/build/ (docx-js + pptxgenjs). BITS logo extracted from sample PDF.
-**Placeholders still to fill (bracketed in all 3 docs):** [Last Name], [Student ID],
-[Programme Name], [Supervisor Name], [Organization Name, Location]. Month used: June 2026.
+## Final Deliverables (COMPLETE ✅) — all in `docs/`
+- `docs/MediQuickAI_FinalReport.docx` — final semester report (BITS ZG628T format)
+- `docs/MediQuickAI_KnowledgeTransfer.docx` — developer onboarding guide
+- `docs/MediQuickAI_Presentation.pptx` — dark/teal deck
+- `docs/archive/` — superseded mid-semester report, kept for reference
+Regenerate any of them with `node report_assets/build/generate_{report,kt,pptx}.js`.
+**Placeholders still to fill by the student (bracketed in all 3 docs):** [Last Name], [Student ID],
+[Programme Name], [Supervisor Name], [Organization Name, Location].
+
+## Defects Found & Fixed (Session 3)
+1. **JSON-contract breakdown on off-topic images** — a logo upload made the model abandon JSON and
+   reply in prose ("I'm a text-based AI assistant"), which the fallback surfaced verbatim. Vision was
+   never broken. Fixed: strengthened prompt (model told it HAS vision, must stay in JSON even when
+   declining) + one strict "reformat as JSON" retry in `routers/chat.py`. Re-verified.
+2. **Shared JWT secret (security)** — `.env.example` shipped with no `JWT_SECRET`, so every install
+   fell back to the hardcoded public default → tokens forgeable across deployments. Fixed:
+   `setup.bat` now generates a unique random secret per install (idempotent).
+3. **Timeouts too tight** — measured NIM vision latency is 14–42s (spikes past 60s). Raised to
+   100s backend / 110s client.
+4. **Dead config** — removed unused `eval_backend_url` (pointed at the wrong port).
+
+## Deployment / Client Install Notes
+`setup.bat` (one-time) then `run.bat`. Hardened after real client-machine failures:
+- **Rejects Python 3.14+** — pydantic-core has no wheels for it, so pip source-builds and fails.
+  Requires Python 3.10–3.13 (3.12 recommended).
+- **Warns on Dropbox/OneDrive/Google Drive** — sync clients lock files mid-install and corrupt the
+  venv (WinError 32). Fix: move the project to a plain local folder, e.g. `C:\MediQuickAI`.
+- No longer upgrades pip in place (that caused the corruption); retries on slow networks; detects
+  and rebuilds a damaged venv; auto-generates JWT_SECRET; reminds if NVIDIA_NIM_API_KEY is unset.
 
 ## Known Issues
-(none — backend validated against live NIM)
+None outstanding. Note: NIM vision responses legitimately take 14–42s — slowness is expected, not a
+fault. Free-tier NVIDIA NIM also throttles under rapid repeated calls.
 
-## Deployment Plan
-Local: uvicorn (port 8000) + Vite dev server (port 5173) on Rishwanth's Windows machine.
-Demo: Run both servers, open localhost:5173 in browser.
+## Repo
+GitHub: https://github.com/Vickey-vijay/doctor-ai (branch `main`)

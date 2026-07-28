@@ -1,5 +1,5 @@
 // Main consultation screen — conversational triage with specialist handoff + triage cards.
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { chatApi, sessionsApi, errMessage } from '../api/client'
 import { useAuth } from '../auth/AuthContext.jsx'
@@ -16,7 +16,7 @@ const EXAMPLES = [
 ]
 
 export default function Chat() {
-  const { activeId, setActiveId, refreshSessions } = useOutletContext()
+  const { activeId, setActiveId, refreshSessions, toggleSidebar } = useOutletContext()
   const { user } = useAuth()
   const [messages, setMessages] = useState([])
   const [specialty, setSpecialty] = useState('General Physician')
@@ -24,35 +24,41 @@ export default function Chat() {
   const [attached, setAttached] = useState(null)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
+  const [loadingMessages, setLoadingMessages] = useState(false)
+  const [loadError, setLoadError] = useState('')
   const scrollRef = useRef(null)
+  const loadingIdRef = useRef(null)
 
-  // Load (or clear) the conversation when the active session changes.
-  useEffect(() => {
-    let active = true
-    async function load() {
-      setError('')
-      if (!activeId) {
-        setMessages([])
-        setSpecialty('General Physician')
-        return
-      }
-      try {
-        const data = await sessionsApi.messages(activeId)
-        if (!active) return
-        setSpecialty(data.specialty_display || 'General Physician')
-        setMessages(
-          data.messages.map((m) => ({
-            id: m.id, role: m.role, content: m.content,
-            triage: m.triage, image_included: m.image_included,
-          }))
-        )
-      } catch (err) {
-        if (active) setError(errMessage(err))
-      }
+  // Load (or clear) the conversation when the active session changes. Guarded by
+  // loadingIdRef so a slow, stale fetch can't clobber a newer session's messages.
+  const loadMessages = useCallback(async () => {
+    const id = activeId
+    loadingIdRef.current = id
+    setLoadError('')
+    if (!id) {
+      setMessages([])
+      setSpecialty('General Physician')
+      return
     }
-    load()
-    return () => { active = false }
+    setLoadingMessages(true)
+    try {
+      const data = await sessionsApi.messages(id)
+      if (loadingIdRef.current !== id) return
+      setSpecialty(data.specialty_display || 'General Physician')
+      setMessages(
+        data.messages.map((m) => ({
+          id: m.id, role: m.role, content: m.content,
+          triage: m.triage, image_included: m.image_included,
+        }))
+      )
+    } catch (err) {
+      if (loadingIdRef.current === id) setLoadError(errMessage(err))
+    } finally {
+      if (loadingIdRef.current === id) setLoadingMessages(false)
+    }
   }, [activeId])
+
+  useEffect(() => { loadMessages() }, [loadMessages])
 
   // Auto-scroll to the newest message.
   useEffect(() => {
@@ -118,14 +124,21 @@ export default function Chat() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
+      <header className="flex items-center justify-between gap-2 border-b border-slate-200 bg-white px-3 py-3 sm:px-5">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-2.5">
+          <button
+            onClick={toggleSidebar}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 md:hidden"
+            aria-label="Open menu"
+          >
+            <Icon.Menu className="h-5 w-5" />
+          </button>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
             <Icon.Stethoscope className="h-5 w-5" />
           </div>
-          <div>
-            <div className="text-sm font-semibold text-slate-900">{specialty}</div>
-            <div className="text-[11px] text-slate-500">
+          <div className="min-w-0">
+            <div className="truncate text-sm font-semibold text-slate-900">{specialty}</div>
+            <div className="truncate text-[11px] text-slate-500">
               {empty ? 'Ready to help' : 'Consultation in progress'}
             </div>
           </div>
@@ -139,7 +152,11 @@ export default function Chat() {
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-6 sm:px-8">
-        {empty ? (
+        {loadingMessages ? (
+          <ChatLoadingSkeleton />
+        ) : loadError ? (
+          <ChatLoadError message={loadError} onRetry={loadMessages} />
+        ) : empty ? (
           <WelcomeState name={user?.full_name} onPick={(t) => send(t)} />
         ) : (
           <div className="mx-auto max-w-3xl space-y-4">
@@ -216,6 +233,37 @@ function WelcomeState({ name, onPick }) {
           </button>
         ))}
       </div>
+    </div>
+  )
+}
+
+function ChatLoadingSkeleton() {
+  return (
+    <div className="mx-auto max-w-3xl space-y-4">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
+          <div
+            className={`h-14 w-2/3 max-w-sm animate-pulse rounded-2xl bg-slate-200/80 ${
+              i % 2 === 0 ? 'rounded-tl-sm' : 'rounded-br-sm'
+            }`}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ChatLoadError({ message, onRetry }) {
+  return (
+    <div className="mx-auto flex max-w-md flex-col items-center pt-10 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-500">
+        <Icon.Alert className="h-6 w-6" />
+      </div>
+      <p className="mt-3 text-sm font-medium text-slate-700">Couldn't load this conversation</p>
+      <p className="mt-1 text-sm text-slate-500">{message}</p>
+      <button onClick={onRetry} className="btn-primary mt-4">
+        <Icon.Refresh className="h-4 w-4" /> Retry
+      </button>
     </div>
   )
 }
