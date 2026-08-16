@@ -29,7 +29,12 @@ def test_create_and_decode_access_token_round_trip():
 def test_decode_access_token_tampered_returns_none():
     """A token with a corrupted signature fails verification and returns None."""
     token = security.create_access_token("user-456")
-    tampered = token[:-1] + ("A" if token[-1] != "A" else "B")
+    header, payload, signature = token.split(".")
+    # Corrupt an EARLY signature character, not the last one: base64url's final character
+    # carries only padding bits, so several different characters decode to the same signature
+    # bytes and the token would still verify (that made this assertion flaky).
+    tampered_signature = ("B" if signature[0] != "B" else "C") + signature[1:]
+    tampered = f"{header}.{payload}.{tampered_signature}"
     assert security.decode_access_token(tampered) is None
 
 

@@ -52,6 +52,19 @@ All deliverables live in `docs/`:
 - `docs/MediQuickAI_Presentation.pptx` — slide deck
 - `docs/archive/` — superseded mid-semester report, kept for reference
 
+## If replies feel slow
+
+NVIDIA hosts the AI model, and its large vision model is sometimes oversubscribed. When that
+happens the app automatically retries on a smaller sibling model (`NVIDIA_NIM_FALLBACK_MODEL` in
+`backend/.env`) so triage keeps working. Only the **first** message pays the wait — after that the
+app skips the unresponsive model for five minutes, so later replies come back quickly.
+
+If you want consistently fast replies, set this in `backend/.env` and restart:
+
+```
+NVIDIA_NIM_MODEL=meta/llama-3.2-11b-vision-instruct
+```
+
 ## Safety Note
 
 This tool provides preliminary triage guidance only. It is not a medical diagnosis and cannot replace a qualified healthcare professional. In an emergency, call your local emergency number immediately.

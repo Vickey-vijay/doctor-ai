@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session as DbSession
 from database import get_db
 from models import Session as ChatSession, User
 from routers.auth import get_current_user
-from services import nvidia_nim, prompt_engine, specialists
+from services import nvidia_nim, prompt_engine, red_flags, specialists
 from services.context_manager import ContextManager
 
 logger = logging.getLogger(__name__)
@@ -134,6 +134,29 @@ async def chat(
 
     if not triage.get("disclaimer"):
         triage["disclaimer"] = prompt_engine.DEFAULT_DISCLAIMER
+
+    # ── Deterministic emergency safety net ────────────────────────────────────
+    # The prompt tells the model to escalate emergencies, but that cannot be the only
+    # guarantee: the smaller fallback model has been observed continuing to gather when
+    # given textbook cardiac symptoms. Missing an emergency is the one failure we cannot
+    # accept, so red flags are also matched in plain Python and force the escalation.
+    if not triage.get("service_error"):
+        flags = red_flags.detect(request.message)
+        if flags and triage.get("urgency_tier") != "seek_emergency":
+            logger.warning("red-flag override | session=%s | flags=%s | model said %s",
+                           session_id, flags, triage.get("urgency_tier"))
+            triage["urgency_tier"] = "seek_emergency"
+            triage["assessment_status"] = "concluded"
+            triage["urgency_reason"] = (
+                f"Your message mentions {', '.join(flags)}, which can indicate a medical emergency. "
+                "Please seek emergency care now rather than waiting."
+            )
+            triage["reply"] = (
+                "Based on what you've described, this needs urgent medical attention. "
+                "Please call your local emergency number or go to the nearest emergency department now. "
+                "I am not able to assess this safely from here."
+            )
+            triage["follow_up_questions"] = []
 
     reply = triage.get("reply") or triage.get("urgency_reason") or ""
     status = triage.get("assessment_status", "gathering")

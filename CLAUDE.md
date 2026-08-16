@@ -161,6 +161,33 @@ Regenerate any of them with `node report_assets/build/generate_{report,kt,pptx}.
 - No longer upgrades pip in place (that caused the corruption); retries on slow networks; detects
   and rebuilds a damaged venv; auto-generates JWT_SECRET; reminds if NVIDIA_NIM_API_KEY is unset.
 
+## Session 4 — Delivery Hardening
+1. **Batch-file parser corruption (root cause of the client's failures)** — Unicode box-drawing
+   characters (U+2500) in REM comments made cmd.exe lose track of line boundaries mid-run,
+   executing comment fragments as commands while still printing "Setup complete". Both .bat files
+   are now pure ASCII, and `.gitattributes` pins `*.bat` to `eol=crlf` so clones AND GitHub ZIP
+   downloads get correct line endings.
+2. **Model failover + circuit breaker** — NVIDIA's hosted 90B vision model periodically stops
+   responding (verified: 75s timeout while 11B answered in 0.8s on the same key). `nvidia_nim.py`
+   now fails over to `NVIDIA_NIM_FALLBACK_MODEL`, and remembers the primary is down for 5 minutes
+   so only the first message pays the timeout (measured 73s -> 25s -> 12.6s).
+3. **Deterministic emergency safety net** (`services/red_flags.py`) — the fallback model did NOT
+   apply the emergency override (chest pain came back as `consult_doctor`/`gathering`). Red flags
+   are now matched in plain Python and force `seek_emergency`/`concluded` regardless of the model.
+   Validated: 11/11 evaluation emergencies caught, 0/19 false escalations, negation-aware
+   ("no chest pain" does not fire).
+4. **Flaky test fixed** — `test_decode_access_token_tampered_returns_none` corrupted the JWT's last
+   base64 character, which only carries padding bits, so ~7% of runs (22/300 measured) produced an
+   equivalent signature and failed. Now corrupts an early signature character: 0/300 failures.
+5. `run.bat` now checks `.venv`/`.env`/`node_modules` separately and warns if the API key is still
+   the placeholder. Test count: **64 passing**.
+
+## Known UI Gaps (backend works, no UI entry point)
+- **Session rename** — `POST /sessions/{id}/rename` works; no UI control calls it.
+- **Profile view/edit** — `PUT /auth/profile` works; there is no screen to edit the health profile
+  after registration. Since the profile now feeds the triage prompt, a mistyped age/allergy cannot
+  be corrected from the UI.
+
 ## Known Issues
 None outstanding. Note: NIM vision responses legitimately take 14–42s — slowness is expected, not a
 fault. Free-tier NVIDIA NIM also throttles under rapid repeated calls.

@@ -13,6 +13,11 @@ class Settings:
     nvidia_nim_model: str = os.environ.get(
         "NVIDIA_NIM_MODEL", "meta/llama-3.2-90b-vision-instruct"
     )
+    # Used automatically when the primary model times out or is overloaded, so the app keeps
+    # working when NVIDIA's hosted 90B vision endpoint is oversubscribed. Set empty to disable.
+    nvidia_nim_fallback_model: str = os.environ.get(
+        "NVIDIA_NIM_FALLBACK_MODEL", "meta/llama-3.2-11b-vision-instruct"
+    )
     database_url: str = os.environ.get("DATABASE_URL", "sqlite:///./mediquick.db")
     max_image_size_mb: int = int(os.environ.get("MAX_IMAGE_SIZE_MB", "5"))
     max_context_turns: int = int(os.environ.get("MAX_CONTEXT_TURNS", "10"))
